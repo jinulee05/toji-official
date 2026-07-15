@@ -12,7 +12,8 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern work",
     "db:generate": "drizzle-kit generate",
-    "qa:screenshots": "PLAYWRIGHT_BROWSERS_PATH=./work/pw-browsers node scripts/capture-qa.mjs"
+    "qa:screenshots": "PLAYWRIGHT_BROWSERS_PATH=./work/pw-browsers node scripts/capture-qa.mjs",
+    "qa:art-direction": "PLAYWRIGHT_BROWSERS_PATH=./work/pw-browsers node scripts/capture-art-direction.mjs"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

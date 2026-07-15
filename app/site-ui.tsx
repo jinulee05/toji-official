@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 type HeaderProps = {
   activeSection?: "music" | "world" | "contact";
@@ -15,9 +17,74 @@ export function SiteFrame({
   children: ReactNode;
   pageClassName?: string;
 }) {
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+
+    if (!stage) {
+      return;
+    }
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let animationFrame = 0;
+
+    const updateSmokePosition = () => {
+      animationFrame = 0;
+      const scrollY = reducedMotion.matches ? 0 : window.scrollY;
+
+      stage.style.setProperty("--smoke-y-north", `${scrollY * 0.08}px`);
+      stage.style.setProperty("--smoke-y-east", `${scrollY * -0.055}px`);
+      stage.style.setProperty("--smoke-y-south", `${scrollY * 0.12}px`);
+      stage.style.setProperty("--smoke-y-center", `${scrollY * -0.035}px`);
+      stage.style.setProperty("--smoke-y-low", `${scrollY * 0.065}px`);
+      stage.style.setProperty(
+        "--smoke-x-drift",
+        `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * 18}px`,
+      );
+      stage.style.setProperty(
+        "--smoke-x-reverse",
+        `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * -13}px`,
+      );
+    };
+
+    const requestSmokeUpdate = () => {
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(updateSmokePosition);
+      }
+    };
+
+    const revealTargets = stage.querySelectorAll<HTMLElement>(".reveal-section");
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            revealObserver.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8%", threshold: 0.08 },
+    );
+
+    stage.classList.add("motion-ready");
+    revealTargets.forEach((target) => revealObserver.observe(target));
+    updateSmokePosition();
+
+    window.addEventListener("scroll", requestSmokeUpdate, { passive: true });
+    reducedMotion.addEventListener("change", requestSmokeUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestSmokeUpdate);
+      reducedMotion.removeEventListener("change", requestSmokeUpdate);
+      revealObserver.disconnect();
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
   return (
     <main className={`site-shell ${pageClassName}`.trim()}>
-      <div className="site-stage">
+      <div className="site-stage" ref={stageRef}>
         <TextureLayer />
         <SmokeField />
         {children}
@@ -91,6 +158,22 @@ export function OverlayFrame({
   onClose: () => void;
   children: ReactNode;
 }) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
+    return () => {
+      previousFocusRef.current?.focus();
+    };
+  }, [open]);
+
   return (
     <div
       className={`site-overlay${open ? " is-open" : ""}`}
@@ -99,6 +182,13 @@ export function OverlayFrame({
       aria-hidden={!open}
       aria-label={title}
       onClick={onClose}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          onClose();
+        }
+      }}
     >
       <div
         className="site-overlay__panel"
@@ -109,6 +199,7 @@ export function OverlayFrame({
           type="button"
           onClick={onClose}
           aria-label={`Close ${title}`}
+          ref={closeButtonRef}
         >
           <span aria-hidden="true">×</span>
         </button>
@@ -125,6 +216,7 @@ function SmokeField() {
       <span className="smoke-field__layer smoke-field__layer--east" />
       <span className="smoke-field__layer smoke-field__layer--south" />
       <span className="smoke-field__layer smoke-field__layer--center" />
+      <span className="smoke-field__layer smoke-field__layer--low" />
     </div>
   );
 }

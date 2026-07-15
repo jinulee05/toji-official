@@ -1,8 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useEffect, useEffectEvent, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   contactLinks,
   episodes,
@@ -22,8 +21,6 @@ const defaultEpisodeId = "rooftop-signal";
 type OverlayState = "music" | "contact" | null;
 
 export default function WorldPage() {
-  const router = useRouter();
-  const pathname = usePathname();
   const [overlay, setOverlay] = useState<OverlayState>(null);
   const [selectedId, setSelectedId] = useState(defaultEpisodeId);
 
@@ -41,12 +38,12 @@ export default function WorldPage() {
 
   const closeOverlay = () => {
     setOverlay(null);
-    router.replace(pathname, { scroll: false });
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${window.location.hash}`,
+    );
   };
-  const handleEscape = useEffectEvent(() => {
-    closeOverlay();
-  });
-
   useEffect(() => {
     const syncOverlayFromLocation = () => {
       const requestedOverlay = new URLSearchParams(window.location.search).get(
@@ -63,27 +60,23 @@ export default function WorldPage() {
     syncOverlayFromLocation();
     window.addEventListener("popstate", syncOverlayFromLocation);
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleEscape();
-      }
-    };
-
     if (overlay) {
-      window.addEventListener("keydown", onKeyDown);
       document.body.classList.add("body-overlay-open");
     }
 
     return () => {
       window.removeEventListener("popstate", syncOverlayFromLocation);
-      window.removeEventListener("keydown", onKeyDown);
       document.body.classList.remove("body-overlay-open");
     };
   }, [overlay]);
 
   const openOverlay = (nextOverlay: Exclude<OverlayState, null>) => {
     setOverlay(nextOverlay);
-    router.replace(`${pathname}?overlay=${nextOverlay}`, { scroll: false });
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}?overlay=${nextOverlay}`,
+    );
   };
 
   return (
@@ -106,7 +99,7 @@ export default function WorldPage() {
         </div>
       </section>
 
-      <section className="world-axis" aria-label="Episode coordinate index">
+      <section className="world-axis reveal-section" aria-label="Episode coordinate index">
         <div className="world-axis__vertical-line" aria-hidden="true" />
         <div className="world-axis__horizontal-line" aria-hidden="true" />
 
@@ -128,7 +121,7 @@ export default function WorldPage() {
             type="button"
             style={
               {
-                "--node-position": `${episode.position * 18 + 28}%`,
+                "--node-position": `${episode.position * 15.5 + 26}%`,
               } as CSSProperties
             }
           >
@@ -146,7 +139,7 @@ export default function WorldPage() {
             type="button"
             style={
               {
-                "--node-position": `${episode.position * 19.3 + 24}%`,
+                "--node-position": `${episode.position * 20 + 22}%`,
               } as CSSProperties
             }
           >
