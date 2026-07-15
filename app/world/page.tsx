@@ -1,6 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   contactLinks,
@@ -18,7 +17,7 @@ import {
   SiteHeader,
 } from "../site-ui";
 
-const defaultEpisodeId = "rooftop-signal";
+const defaultEpisodeId = "the-man";
 type OverlayState = "music" | "contact" | null;
 
 export default function WorldPage() {
@@ -26,7 +25,10 @@ export default function WorldPage() {
   const [selectedId, setSelectedId] = useState(defaultEpisodeId);
 
   const horizontalEpisodes = useMemo(
-    () => episodes.filter((entry) => entry.axis === "horizontal"),
+    () =>
+      episodes
+        .filter((entry) => entry.axis === "origin" || entry.axis === "horizontal")
+        .sort((a, b) => a.position - b.position),
     [],
   );
   const verticalEpisodes = useMemo(
@@ -103,82 +105,66 @@ export default function WorldPage() {
       <ImpactTransition variant="world" />
 
       <section className="world-axis reveal-section" aria-label="Episode coordinate index">
-        <div className="world-axis__vertical-line" aria-hidden="true" />
-        <div className="world-axis__horizontal-line" aria-hidden="true" />
+        <div className="world-axis__map">
+          <WorldAxisLines />
 
-        <button
-          className="world-axis__origin"
-          type="button"
-          onClick={() => setSelectedId(defaultEpisodeId)}
-        >
-          X
-        </button>
+          <div className="world-axis__horizontal-nodes">
+            {horizontalEpisodes.map((episode) => (
+              <button
+                aria-pressed={selectedId === episode.id}
+                className={`world-axis__node world-axis__node--horizontal${
+                  episode.axis === "origin" ? " is-origin" : ""
+                }${selectedId === episode.id ? " is-selected" : ""}`}
+                key={episode.id}
+                onClick={() => setSelectedId(episode.id)}
+                type="button"
+              >
+                {episode.coordinate}
+              </button>
+            ))}
+          </div>
 
-        {horizontalEpisodes.map((episode) => (
-          <button
-            className={`world-axis__node world-axis__node--horizontal${
-              selectedId === episode.id ? " is-selected" : ""
-            }`}
-            key={episode.id}
-            onClick={() => setSelectedId(episode.id)}
-            type="button"
-            style={
-              {
-                "--node-position": `${episode.position * 15.5 + 26}%`,
-              } as CSSProperties
-            }
-          >
-            {episode.coordinate}
-          </button>
-        ))}
-
-        {verticalEpisodes.map((episode) => (
-          <button
-            className={`world-axis__node world-axis__node--vertical${
-              selectedId === episode.id ? " is-selected" : ""
-            }`}
-            key={episode.id}
-            onClick={() => setSelectedId(episode.id)}
-            type="button"
-            style={
-              {
-                "--node-position": `${episode.position * 20 + 22}%`,
-              } as CSSProperties
-            }
-          >
-            {episode.coordinate}
-          </button>
-        ))}
+          <div className="world-axis__vertical-nodes">
+            <span aria-hidden="true" />
+            {verticalEpisodes.map((episode) => (
+              <button
+                aria-pressed={selectedId === episode.id}
+                className={`world-axis__node world-axis__node--vertical${
+                  selectedId === episode.id ? " is-selected" : ""
+                }`}
+                key={episode.id}
+                onClick={() => setSelectedId(episode.id)}
+                type="button"
+              >
+                {episode.coordinate}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="world-axis__detail">
-          {selectedEpisode.status === "available" ? (
-            <>
-              <span>{selectedEpisode.episodeLabel}</span>
-              <h2>{selectedEpisode.title}</h2>
+          <div className="world-axis__detail-body" key={selectedEpisode.id}>
+            <span>
+              {selectedEpisode.status === "available"
+                ? selectedEpisode.episodeLabel
+                : `ARCHIVE ${selectedEpisode.coordinate}`}
+            </span>
+            <h2 className={`is-${titleLength(selectedEpisode.title)}`}>
+              {selectedEpisode.title}
+            </h2>
+            {selectedEpisode.status === "available" ? (
               <div>
                 {selectedEpisode.description?.map((line) => <p key={line}>{line}</p>)}
               </div>
+            ) : null}
+            {selectedEpisode.status === "available" ? (
               <button type="button">READ →</button>
-            </>
-          ) : (
-            <>
-              <span>{selectedEpisode.coordinate}</span>
-              <h2>{selectedEpisode.coordinate === "0" ? "PROLOGUE" : "UNTITLED"}</h2>
-              <div>
-                <p>
-                  {selectedEpisode.coordinate === "0"
-                    ? "Archive entry reserved for the opening axis."
-                    : "Metadata unavailable."}
-                </p>
-                <p>
-                  {selectedEpisode.coordinate === "0"
-                    ? "Narrative sequencing not yet disclosed."
-                    : "Coordinate locked."}
-                </p>
-              </div>
-              <button type="button">UNAVAILABLE</button>
-            </>
-          )}
+            ) : (
+              <button type="button" disabled>
+                LOCKED
+              </button>
+            )}
+          </div>
         </div>
       </section>
 
@@ -237,4 +223,72 @@ export default function WorldPage() {
       </OverlayFrame>
     </SiteFrame>
   );
+}
+
+function WorldAxisLines() {
+  const horizontalCenters = [50, 150, 250, 350, 450, 550, 650];
+  const verticalCenters = [50, 150, 250, 350];
+
+  return (
+    <svg
+      className="world-axis__lines"
+      viewBox="0 0 700 400"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="axis-fade-horizontal" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="white" stopOpacity="0" />
+          <stop offset="0.2" stopColor="white" stopOpacity="0.6" />
+          <stop offset="0.5" stopColor="white" stopOpacity="0.86" />
+          <stop offset="0.8" stopColor="white" stopOpacity="0.6" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="axis-fade-vertical" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="white" stopOpacity="0" />
+          <stop offset="0.22" stopColor="white" stopOpacity="0.6" />
+          <stop offset="0.5" stopColor="white" stopOpacity="0.86" />
+          <stop offset="0.78" stopColor="white" stopOpacity="0.6" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <g className="world-axis__line-group world-axis__line-group--horizontal">
+        {horizontalCenters.slice(0, -1).map((center, index) => (
+          <line
+            key={center}
+            x1={center}
+            y1="50"
+            x2={horizontalCenters[index + 1]}
+            y2="50"
+            stroke="url(#axis-fade-horizontal)"
+          />
+        ))}
+      </g>
+      <g className="world-axis__line-group world-axis__line-group--vertical">
+        {verticalCenters.slice(0, -1).map((center, index) => (
+          <line
+            key={center}
+            x1="50"
+            y1={center}
+            x2="50"
+            y2={verticalCenters[index + 1]}
+            stroke="url(#axis-fade-vertical)"
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function titleLength(title: string) {
+  if (title.length >= 21) {
+    return "long";
+  }
+
+  if (title.length >= 14) {
+    return "medium";
+  }
+
+  return "short";
 }

@@ -31,7 +31,7 @@ export type Episode = {
   status: "available" | "locked";
   slug?: string;
   url?: string;
-  axis: "horizontal" | "vertical";
+  axis: "origin" | "horizontal" | "vertical";
   position: number;
 };
 
@@ -135,12 +135,20 @@ export const worldPrelude = [
 
 export const episodes: Episode[] = [
   {
-    id: "prologue",
+    id: "the-man",
+    coordinate: "X",
+    title: "THE MAN",
+    status: "locked",
+    axis: "origin",
+    position: 0,
+  },
+  {
+    id: "the-girl",
     coordinate: "0",
-    title: "PROLOGUE",
+    title: "THE GIRL",
     status: "locked",
     axis: "horizontal",
-    position: 0,
+    position: 1,
   },
   {
     id: "rooftop-signal",
@@ -152,7 +160,7 @@ export const episodes: Episode[] = [
     slug: "rooftop-signal",
     url: "/world/rooftop-signal",
     axis: "horizontal",
-    position: 1,
+    position: 2,
   },
   {
     id: "hotel-rafflesia",
@@ -160,44 +168,52 @@ export const episodes: Episode[] = [
     title: "HOTEL RAFFLESIA",
     status: "locked",
     axis: "horizontal",
-    position: 2,
-  },
-  {
-    id: "yaga",
-    coordinate: "3",
-    title: "YAGA",
-    status: "locked",
-    axis: "horizontal",
     position: 3,
   },
   {
-    id: "future-entry",
-    coordinate: "4",
-    title: "UNTITLED",
+    id: "backroom-nando",
+    coordinate: "3",
+    title: "BACKROOM NANDO (房)",
     status: "locked",
     axis: "horizontal",
     position: 4,
   },
   {
-    id: "branch-a",
+    id: "vista-house",
+    coordinate: "4",
+    title: "VISTA HOUSE",
+    status: "locked",
+    axis: "horizontal",
+    position: 5,
+  },
+  {
+    id: "zombie-man",
+    coordinate: "5",
+    title: "ZOMBIE MAN",
+    status: "locked",
+    axis: "horizontal",
+    position: 6,
+  },
+  {
+    id: "the-guidebook",
     coordinate: "A",
-    title: "UNTITLED",
+    title: "THE GUIDEBOOK",
     status: "locked",
     axis: "vertical",
     position: 1,
   },
   {
-    id: "branch-b",
+    id: "inochi-betting",
     coordinate: "B",
-    title: "UNTITLED",
+    title: "INOCHI BETTING",
     status: "locked",
     axis: "vertical",
     position: 2,
   },
   {
-    id: "branch-c",
+    id: "the-real-gambler-blues",
     coordinate: "C",
-    title: "UNTITLED",
+    title: "THE REAL GAMBLER BLUES",
     status: "locked",
     axis: "vertical",
     position: 3,

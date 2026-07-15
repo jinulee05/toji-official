@@ -47,7 +47,8 @@ The capture script lives at `scripts/capture-qa.mjs`.
 
 ## Asset Replacement
 
-- Primary rendered hero: `public/toji/hero-primary.png`
+- Primary rendered hero: `public/toji/hero-final.png`
+- Original procedural grain: `public/toji/grain-original.svg`
 - The supplied edge, impact, and grain references are kept only in ignored
   `work/reference/` files and are never rendered or published
 - The original black edge geometry and impact/grain transitions are implemented
