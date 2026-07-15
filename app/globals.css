@@ -1292,10 +1292,19 @@ img {
 .overlay-contact-row:focus-visible,
 .release-card__links a:focus-visible,
 .contact-strip a:focus-visible,
-.world-axis__node:focus-visible,
 .world-axis__detail button:focus-visible {
   outline: 1px solid rgba(244, 239, 234, 0.78);
   outline-offset: 4px;
+}
+
+.world-axis__node:focus-visible {
+  outline: none;
+  opacity: 1;
+}
+
+.world-axis__node:focus-visible::after {
+  opacity: 0.86;
+  transform: translateX(-50%) scaleX(1);
 }
 
 @media (prefers-reduced-motion: no-preference) {
