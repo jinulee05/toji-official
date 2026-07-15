@@ -33,7 +33,6 @@ export function SiteFrame({
     const updateSmokePosition = () => {
       animationFrame = 0;
       const scrollY = reducedMotion.matches ? 0 : window.scrollY;
-      const heroInkStrength = window.innerWidth <= 688 ? 0.42 : 1;
 
       stage.style.setProperty("--smoke-y-north", `${scrollY * 0.08}px`);
       stage.style.setProperty("--smoke-y-east", `${scrollY * -0.055}px`);
@@ -47,19 +46,6 @@ export function SiteFrame({
       stage.style.setProperty(
         "--smoke-x-reverse",
         `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * -13}px`,
-      );
-      stage.style.setProperty("--hero-art-y", `${scrollY * 0.018}px`);
-      stage.style.setProperty(
-        "--hero-ink-y",
-        `${scrollY * 0.105 * heroInkStrength}px`,
-      );
-      stage.style.setProperty(
-        "--hero-ink-x",
-        `${Math.sin(scrollY / 540) * 9 * heroInkStrength}px`,
-      );
-      stage.style.setProperty(
-        "--hero-ink-rotate",
-        `${Math.sin(scrollY / 760) * 0.42 * heroInkStrength}deg`,
       );
     };
 
@@ -166,7 +152,7 @@ export function SectionMarker() {
 export function ImpactTransition({
   variant,
 }: {
-  variant: "hero" | "music" | "world";
+  variant: "hero" | "music";
 }) {
   return (
     <div className={`impact-transition impact-transition--${variant}`} aria-hidden="true">

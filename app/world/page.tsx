@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   contactLinks,
   episodes,
@@ -11,7 +11,6 @@ import {
 import { withBasePath } from "../runtime-paths";
 import {
   FooterMark,
-  ImpactTransition,
   OverlayFrame,
   SiteFrame,
   SiteHeader,
@@ -20,21 +19,23 @@ import {
 const defaultEpisodeId = "the-man";
 type OverlayState = "music" | "contact" | null;
 
+const roadmapPoints = [
+  { id: "the-man", x: 50, y: 50, origin: true },
+  { id: "the-girl", x: 34, y: 16 },
+  { id: "rooftop-signal", x: 52, y: 11 },
+  { id: "hotel-rafflesia", x: 72, y: 20 },
+  { id: "backroom-nando", x: 84, y: 39 },
+  { id: "vista-house", x: 82, y: 64 },
+  { id: "zombie-man", x: 62, y: 82 },
+  { id: "the-guidebook", x: 40, y: 82 },
+  { id: "inochi-betting", x: 19, y: 63 },
+  { id: "the-real-gambler-blues", x: 18, y: 36 },
+] as const;
+
 export default function WorldPage() {
   const [overlay, setOverlay] = useState<OverlayState>(null);
   const [selectedId, setSelectedId] = useState(defaultEpisodeId);
 
-  const horizontalEpisodes = useMemo(
-    () =>
-      episodes
-        .filter((entry) => entry.axis === "origin" || entry.axis === "horizontal")
-        .sort((a, b) => a.position - b.position),
-    [],
-  );
-  const verticalEpisodes = useMemo(
-    () => episodes.filter((entry) => entry.axis === "vertical"),
-    [],
-  );
   const selectedEpisode =
     episodes.find((entry) => entry.id === selectedId) ??
     episodes.find((entry) => entry.id === defaultEpisodeId)!;
@@ -102,43 +103,42 @@ export default function WorldPage() {
         </div>
       </section>
 
-      <ImpactTransition variant="world" />
-
       <section className="world-axis reveal-section" aria-label="Episode coordinate index">
         <div className="world-axis__map">
-          <WorldAxisLines />
+          <WorldRoadmapLines selectedId={selectedId} />
 
-          <div className="world-axis__horizontal-nodes">
-            {horizontalEpisodes.map((episode) => (
-              <button
-                aria-pressed={selectedId === episode.id}
-                className={`world-axis__node world-axis__node--horizontal${
-                  episode.axis === "origin" ? " is-origin" : ""
-                }${selectedId === episode.id ? " is-selected" : ""}`}
-                key={episode.id}
-                onClick={() => setSelectedId(episode.id)}
-                type="button"
-              >
-                {episode.coordinate}
-              </button>
-            ))}
-          </div>
+          <div className="world-axis__nodes">
+            {roadmapPoints.map((point) => {
+              const episode = episodes.find((entry) => entry.id === point.id)!;
 
-          <div className="world-axis__vertical-nodes">
-            <span aria-hidden="true" />
-            {verticalEpisodes.map((episode) => (
-              <button
-                aria-pressed={selectedId === episode.id}
-                className={`world-axis__node world-axis__node--vertical${
-                  selectedId === episode.id ? " is-selected" : ""
-                }`}
-                key={episode.id}
-                onClick={() => setSelectedId(episode.id)}
-                type="button"
-              >
-                {episode.coordinate}
-              </button>
-            ))}
+              return (
+                <button
+                  aria-label={episode.coordinate}
+                  aria-pressed={selectedId === episode.id}
+                  className={`world-axis__node${
+                    "origin" in point && point.origin ? " is-origin" : ""
+                  }${selectedId === episode.id ? " is-selected" : ""}`}
+                  key={episode.id}
+                  onClick={() => setSelectedId(episode.id)}
+                  style={
+                    {
+                      "--node-x": `${point.x}%`,
+                      "--node-y": `${point.y}%`,
+                    } as CSSProperties
+                  }
+                  type="button"
+                >
+                  <span className="world-axis__node-coordinate" aria-hidden="true">
+                    — {episode.coordinate} —
+                  </span>
+                  {"origin" in point && point.origin ? null : (
+                    <span className="world-axis__node-title" aria-hidden="true">
+                      {roadmapTitle(episode.title)}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -225,60 +225,67 @@ export default function WorldPage() {
   );
 }
 
-function WorldAxisLines() {
-  const horizontalCenters = [50, 150, 250, 350, 450, 550, 650];
-  const verticalCenters = [50, 150, 250, 350];
+function WorldRoadmapLines({ selectedId }: { selectedId: string }) {
+  const selectedPoint =
+    roadmapPoints.find((point) => point.id === selectedId) ?? roadmapPoints[0];
+  const handPoint = selectedPoint.id === defaultEpisodeId ? roadmapPoints[1] : selectedPoint;
 
   return (
     <svg
-      className="world-axis__lines"
-      viewBox="0 0 700 400"
+      className="world-axis__roadmap"
+      viewBox="0 0 1000 660"
       preserveAspectRatio="none"
       aria-hidden="true"
       focusable="false"
     >
       <defs>
-        <linearGradient id="axis-fade-horizontal" x1="0" y1="0" x2="1" y2="0">
+        <radialGradient id="roadmap-ray-fade" cx="50%" cy="50%" r="62%">
+          <stop offset="0" stopColor="white" stopOpacity="0.66" />
+          <stop offset="0.54" stopColor="white" stopOpacity="0.28" />
+          <stop offset="1" stopColor="white" stopOpacity="0.04" />
+        </radialGradient>
+        <linearGradient id="roadmap-hand-fade" x1="0" y1="1" x2="1" y2="0">
           <stop offset="0" stopColor="white" stopOpacity="0" />
-          <stop offset="0.2" stopColor="white" stopOpacity="0.6" />
-          <stop offset="0.5" stopColor="white" stopOpacity="0.86" />
-          <stop offset="0.8" stopColor="white" stopOpacity="0.6" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="axis-fade-vertical" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="white" stopOpacity="0" />
-          <stop offset="0.22" stopColor="white" stopOpacity="0.6" />
-          <stop offset="0.5" stopColor="white" stopOpacity="0.86" />
-          <stop offset="0.78" stopColor="white" stopOpacity="0.6" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
+          <stop offset="0.25" stopColor="white" stopOpacity="0.24" />
+          <stop offset="1" stopColor="white" stopOpacity="0.92" />
         </linearGradient>
       </defs>
-      <g className="world-axis__line-group world-axis__line-group--horizontal">
-        {horizontalCenters.slice(0, -1).map((center, index) => (
+
+      <g className="world-axis__orbits">
+        <ellipse cx="500" cy="330" rx="240" ry="158" />
+        <ellipse cx="500" cy="330" rx="342" ry="248" />
+      </g>
+
+      <g className="world-axis__rays">
+        {roadmapPoints.slice(1).map((point) => (
           <line
-            key={center}
-            x1={center}
-            y1="50"
-            x2={horizontalCenters[index + 1]}
-            y2="50"
-            stroke="url(#axis-fade-horizontal)"
+            className={selectedId === point.id ? "is-selected" : undefined}
+            key={point.id}
+            x1="500"
+            y1="330"
+            x2={point.x * 10}
+            y2={point.y * 6.6}
           />
         ))}
       </g>
-      <g className="world-axis__line-group world-axis__line-group--vertical">
-        {verticalCenters.slice(0, -1).map((center, index) => (
-          <line
-            key={center}
-            x1="50"
-            y1={center}
-            x2="50"
-            y2={verticalCenters[index + 1]}
-            stroke="url(#axis-fade-vertical)"
-          />
-        ))}
+
+      <line
+        className="world-axis__second-hand"
+        x1="500"
+        y1="330"
+        x2={handPoint.x * 10}
+        y2={handPoint.y * 6.6}
+      />
+      <g className="world-axis__center-mark">
+        <circle cx="500" cy="330" r="13" />
+        <circle cx="500" cy="330" r="4" />
       </g>
     </svg>
   );
+}
+
+function roadmapTitle(title: string) {
+  return title.split(" ").join(" — ");
 }
 
 function titleLength(title: string) {

@@ -32,9 +32,9 @@ test("server-renders the final TOJI hero system", async () => {
   assert.match(html, /<title>TOJI \| Official Site<\/title>/i);
   assert.match(html, /src="\/toji\/hero-final\.png"/i);
   assert.match(html, /grain-original\.svg/i);
-  assert.match(html, /hero-panel__ink-layer--mass-left/i);
-  assert.match(html, /hero-panel__ink-layer--hook-right/i);
-  assert.match(html, /ARTIST \/ PRODUCER \/|ARTIST \/ PRODUCER/i);
+  assert.match(html, /hero-panel__title/i);
+  assert.doesNotMatch(html, /hero-panel__ink/i);
+  assert.doesNotMatch(html, /ARTIST \/ PRODUCER \/|ARTIST \/ PRODUCER/i);
   assert.doesNotMatch(html, /JOKER/i);
 });
 
@@ -66,8 +66,8 @@ test("server-renders the complete WORLD coordinate archive", async () => {
     assert.ok(content.includes(title), `missing WORLD title: ${title}`);
   }
 
-  assert.match(html, /world-axis__lines/i);
-  assert.match(html, /axis-fade-horizontal/i);
-  assert.match(html, /axis-fade-vertical/i);
+  assert.match(html, /world-axis__roadmap/i);
+  assert.match(html, /roadmap-ray-fade/i);
+  assert.match(html, /world-axis__second-hand/i);
   assert.doesNotMatch(html, /JOKER/i);
 });
