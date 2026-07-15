@@ -80,17 +80,10 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className="hero-panel__image"
-            src={withBasePath("/toji/hero-primary.png")}
+            src={withBasePath("/toji/hero-final.png")}
             alt="TOJI in a black suit and tie with a faceless white stitched head against an oxblood field."
           />
-          <div className="hero-panel__edge-system" aria-hidden="true">
-            <span className="hero-panel__edge hero-panel__edge--north-west" />
-            <span className="hero-panel__edge hero-panel__edge--north-east" />
-            <span className="hero-panel__edge hero-panel__edge--south-west" />
-            <span className="hero-panel__edge hero-panel__edge--south-east" />
-            <span className="hero-panel__edge hero-panel__edge--curl-west" />
-            <span className="hero-panel__edge hero-panel__edge--curl-east" />
-          </div>
+          <HeroInkOverlay />
         </div>
         <h1 className="hero-panel__title" id="toji-heading">
           TOJI
@@ -222,5 +215,38 @@ export default function Home() {
         </div>
       </OverlayFrame>
     </SiteFrame>
+  );
+}
+
+function HeroInkOverlay() {
+  return (
+    <svg
+      className="hero-panel__ink"
+      viewBox="0 0 1600 900"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g className="hero-panel__ink-layer hero-panel__ink-layer--mass-left">
+        <path d="M0 900V644c53 8 94 31 125 70 34 42 86 64 158 67l-52 24 78 29c-99-7-172-23-218-47-39-20-69-46-91-78Z" />
+        <path d="M0 588c61 12 109 4 145-24 31-24 45-53 40-88 34 36 35 76 2 121-31 42-93 64-187 65Z" />
+      </g>
+      <g className="hero-panel__ink-layer hero-panel__ink-layer--hook-right">
+        <path d="M1600 0h-169c37 27 50 58 39 91-8 25-31 48-68 70 53-14 96-7 129 20 28 23 51 60 69 111Z" />
+        <path d="M1600 273c-54 13-93 40-117 81-20 34-20 70 0 109-42-23-65-55-68-94-3-41 17-78 61-111 34-25 75-42 124-49Z" />
+        <path d="M1600 506c-70-2-127-20-171-55 36 51 88 84 155 98l16 3Z" />
+      </g>
+      <g className="hero-panel__ink-layer hero-panel__ink-layer--pressure-left">
+        <path d="M0 194v276c29-39 67-66 114-80 44-13 77-43 101-91-43 30-82 45-118 44-38-1-70-19-97-54Z" />
+        <path d="M0 489c65-15 119-47 162-96-27 61-72 103-136 126L0 526Z" />
+      </g>
+      <g className="hero-panel__ink-layer hero-panel__ink-layer--fragments">
+        <path d="M92 756l50-18-19 35 34 16-62 18Z" />
+        <path d="M291 804l42-8-14 24 26 13-52 11Z" />
+        <path d="M1327 733l54-13-18 31 39 14-68 14Z" />
+        <path d="M1472 616l43-22-9 35 31 7-48 26Z" />
+        <path d="M1541 476l25-10-7 21 20 5-31 14Z" />
+      </g>
+    </svg>
   );
 }

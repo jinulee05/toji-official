@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { withBasePath } from "./runtime-paths";
 
 type HeaderProps = {
   activeSection?: "music" | "world" | "contact";
@@ -32,6 +33,7 @@ export function SiteFrame({
     const updateSmokePosition = () => {
       animationFrame = 0;
       const scrollY = reducedMotion.matches ? 0 : window.scrollY;
+      const heroInkStrength = window.innerWidth <= 688 ? 0.42 : 1;
 
       stage.style.setProperty("--smoke-y-north", `${scrollY * 0.08}px`);
       stage.style.setProperty("--smoke-y-east", `${scrollY * -0.055}px`);
@@ -45,6 +47,19 @@ export function SiteFrame({
       stage.style.setProperty(
         "--smoke-x-reverse",
         `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * -13}px`,
+      );
+      stage.style.setProperty("--hero-art-y", `${scrollY * 0.018}px`);
+      stage.style.setProperty(
+        "--hero-ink-y",
+        `${scrollY * 0.105 * heroInkStrength}px`,
+      );
+      stage.style.setProperty(
+        "--hero-ink-x",
+        `${Math.sin(scrollY / 540) * 9 * heroInkStrength}px`,
+      );
+      stage.style.setProperty(
+        "--hero-ink-rotate",
+        `${Math.sin(scrollY / 760) * 0.42 * heroInkStrength}deg`,
       );
     };
 
@@ -72,10 +87,12 @@ export function SiteFrame({
     updateSmokePosition();
 
     window.addEventListener("scroll", requestSmokeUpdate, { passive: true });
+    window.addEventListener("resize", requestSmokeUpdate, { passive: true });
     reducedMotion.addEventListener("change", requestSmokeUpdate);
 
     return () => {
       window.removeEventListener("scroll", requestSmokeUpdate);
+      window.removeEventListener("resize", requestSmokeUpdate);
       reducedMotion.removeEventListener("change", requestSmokeUpdate);
       revealObserver.disconnect();
       window.cancelAnimationFrame(animationFrame);
@@ -84,7 +101,15 @@ export function SiteFrame({
 
   return (
     <main className={`site-shell ${pageClassName}`.trim()}>
-      <div className="site-stage" ref={stageRef}>
+      <div
+        className="site-stage"
+        ref={stageRef}
+        style={
+          {
+            "--grain-texture": `url("${withBasePath("/toji/grain-original.svg")}")`,
+          } as CSSProperties
+        }
+      >
         <TextureLayer />
         <SmokeField />
         {children}
