@@ -12,6 +12,7 @@ import {
 import { withBasePath } from "../runtime-paths";
 import {
   FooterMark,
+  ImpactTransition,
   OverlayFrame,
   SiteFrame,
   SiteHeader,
@@ -98,6 +99,8 @@ export default function WorldPage() {
           <p>{worldPrelude[1]}</p>
         </div>
       </section>
+
+      <ImpactTransition variant="world" />
 
       <section className="world-axis reveal-section" aria-label="Episode coordinate index">
         <div className="world-axis__vertical-line" aria-hidden="true" />

@@ -12,6 +12,7 @@ import {
 import { withBasePath } from "./runtime-paths";
 import {
   FooterMark,
+  ImpactTransition,
   OverlayFrame,
   SectionMarker,
   SiteFrame,
@@ -75,7 +76,22 @@ export default function Home() {
       />
 
       <section className="hero-panel" aria-labelledby="toji-heading">
-        <div className="hero-panel__field" />
+        <div className="hero-panel__field">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="hero-panel__image"
+            src={withBasePath("/toji/hero-primary.png")}
+            alt="TOJI in a black suit and tie with a faceless white stitched head against an oxblood field."
+          />
+          <div className="hero-panel__edge-system" aria-hidden="true">
+            <span className="hero-panel__edge hero-panel__edge--north-west" />
+            <span className="hero-panel__edge hero-panel__edge--north-east" />
+            <span className="hero-panel__edge hero-panel__edge--south-west" />
+            <span className="hero-panel__edge hero-panel__edge--south-east" />
+            <span className="hero-panel__edge hero-panel__edge--curl-west" />
+            <span className="hero-panel__edge hero-panel__edge--curl-east" />
+          </div>
+        </div>
         <h1 className="hero-panel__title" id="toji-heading">
           TOJI
         </h1>
@@ -84,14 +100,9 @@ export default function Home() {
           <p>WORLD BUILDER</p>
           <span>SEOUL — JAPAN</span>
         </div>
-        <div className="hero-panel__art">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={withBasePath("/toji/hero-cutout.png")}
-            alt="TOJI character artwork with lowered head, black suit, white shirt, and black tie."
-          />
-        </div>
       </section>
+
+      <ImpactTransition variant="hero" />
 
       <section className="statement-panel reveal-section" aria-label="Artist statement">
         <SectionMarker />
@@ -140,6 +151,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <ImpactTransition variant="music" />
 
       <section className="content-section content-section--contact reveal-section" aria-labelledby="contact-section-title">
         <div className="content-section__heading">

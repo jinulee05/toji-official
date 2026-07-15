@@ -138,6 +138,20 @@ export function SectionMarker() {
   return <div className="section-marker" aria-hidden="true" />;
 }
 
+export function ImpactTransition({
+  variant,
+}: {
+  variant: "hero" | "music" | "world";
+}) {
+  return (
+    <div className={`impact-transition impact-transition--${variant}`} aria-hidden="true">
+      <span className="impact-transition__ink" />
+      <span className="impact-transition__streaks" />
+      <span className="impact-transition__dust" />
+    </div>
+  );
+}
+
 export function FooterMark() {
   return (
     <div className="footer-mark" aria-label="Hunter">

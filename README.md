@@ -47,7 +47,11 @@ The capture script lives at `scripts/capture-qa.mjs`.
 
 ## Asset Replacement
 
-- Hero artwork: replace `public/toji/hero-artwork.png`
+- Primary rendered hero: `public/toji/hero-primary.png`
+- The supplied edge, impact, and grain references are kept only in ignored
+  `work/reference/` files and are never rendered or published
+- The original black edge geometry and impact/grain transitions are implemented
+  in `app/globals.css` without reference-image text or symbols
 - Release artwork placeholders are CSS-based and defined in `app/globals.css`
 - Reference QA crops are stored in `work/qa/` and are not production assets
 
