@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://sadistoji.com
+Sitemap: https://sadistoji.com/sitemap.xml

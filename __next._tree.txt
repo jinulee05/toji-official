@@ -1,2 +1,2 @@
-:HL["/toji-official/_next/static/chunks/12~y8i._lf318.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"jIOkFBByaxGybd1f93DeL"}
+:HL["/toji-official/_next/static/chunks/0349.kjqgj7jz.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}},"staleTime":300,"buildId":"KoX-v6w5mVaRw0iw_JJ-f"}
