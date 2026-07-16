@@ -1,0 +1,7 @@
+interface:
+  display_name: "TOJI Web Art Director"
+  short_description: "Art-direct and visually QA the TOJI official website"
+  default_prompt: "Use $toji-web-art-director to refine and visually QA the TOJI official website."
+
+policy:
+  allow_implicit_invocation: true
