@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { withBasePath } from "./runtime-paths";
 
 type HeaderProps = {
   activeSection?: "music" | "world" | "contact";
+  activeWorldDestination?: "world" | "part-1" | "part-2";
   overlay?: "music" | "contact" | null;
   onMusicOpen?: () => void;
   onContactOpen?: () => void;
@@ -106,10 +113,13 @@ export function SiteFrame({
 
 export function SiteHeader({
   activeSection,
+  activeWorldDestination,
   overlay,
   onMusicOpen,
   onContactOpen,
 }: HeaderProps) {
+  const [worldMenuOpen, setWorldMenuOpen] = useState(false);
+
   return (
     <header className="site-header">
       <Link className="site-logo" href="/">
@@ -125,9 +135,55 @@ export function SiteHeader({
         >
           MUSIC
         </button>
-        <Link className={navState("world", activeSection, overlay)} href="/world">
-          WORLD
-        </Link>
+        <div
+          className={`site-nav__world${worldMenuOpen ? " is-open" : ""}`}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setWorldMenuOpen(false);
+            }
+          }}
+        >
+          <Link
+            aria-current={activeWorldDestination === "world" ? "page" : undefined}
+            className={navState("world", activeSection, overlay)}
+            href="/world"
+            onClick={() => setWorldMenuOpen(false)}
+          >
+            WORLD
+          </Link>
+          <button
+            aria-controls="world-submenu"
+            aria-expanded={worldMenuOpen}
+            aria-label="Toggle WORLD destinations"
+            className="site-nav__world-toggle"
+            onClick={() => setWorldMenuOpen((open) => !open)}
+            type="button"
+          >
+            <span aria-hidden="true">+</span>
+          </button>
+          <div className="site-nav__submenu" id="world-submenu">
+            <Link
+              aria-current={activeWorldDestination === "part-1" ? "page" : undefined}
+              className={`site-nav__submenu-link${
+                activeWorldDestination === "part-1" ? " is-active" : ""
+              }`}
+              href="/world/part-1"
+              onClick={() => setWorldMenuOpen(false)}
+            >
+              PART I
+            </Link>
+            <Link
+              aria-current={activeWorldDestination === "part-2" ? "page" : undefined}
+              className={`site-nav__submenu-link${
+                activeWorldDestination === "part-2" ? " is-active" : ""
+              }`}
+              href="/world/part-2"
+              onClick={() => setWorldMenuOpen(false)}
+            >
+              PART II
+            </Link>
+          </div>
+        </div>
         <button
           className={navState("contact", activeSection, overlay)}
           type="button"

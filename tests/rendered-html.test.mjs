@@ -38,8 +38,28 @@ test("server-renders the final TOJI hero system", async () => {
   assert.doesNotMatch(html, /JOKER/i);
 });
 
-test("server-renders the complete WORLD coordinate archive", async () => {
+test("server-renders WORLD as a character archive", async () => {
   const response = await render("/world");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /THE OUTSIDER/i);
+  assert.match(html, /WORLD \/ CHARACTERS/i);
+  assert.match(html, /TOJI/i);
+  assert.match(html, /RIN/i);
+  assert.match(html, /JANE/i);
+  assert.match(html, /THE MAN/i);
+  assert.match(html, /src="\/toji\/world\/toji\.png"/i);
+  assert.match(html, /src="\/toji\/world\/rin\.png"/i);
+  assert.match(html, /src="\/toji\/world\/jane\.png"/i);
+  assert.match(html, /href="\/world\/part-1"/i);
+  assert.match(html, /href="\/world\/part-2"/i);
+  assert.doesNotMatch(html, /archive-axis__map/i);
+  assert.doesNotMatch(html, /JOKER/i);
+});
+
+test("server-renders the complete PART I coordinate archive", async () => {
+  const response = await render("/world/part-1");
   assert.equal(response.status, 200);
 
   const html = await response.text();
@@ -48,8 +68,10 @@ test("server-renders the complete WORLD coordinate archive", async () => {
     "utf8",
   );
   assert.match(html, /THE OUTSIDER/i);
-  assert.match(html, /A NOIR OPERA/i);
-  assert.match(html, /THE MAN/i);
+  assert.match(html, /PART I/i);
+  assert.match(html, /archive-axis__horizontal/i);
+  assert.match(html, /archive-axis__vertical/i);
+  assert.match(html, /aria-label="X: THE MAN"[^>]*aria-pressed="true"/i);
 
   for (const title of [
     "THE MAN",
@@ -64,10 +86,20 @@ test("server-renders the complete WORLD coordinate archive", async () => {
     "THE REAL GAMBLER BLUES",
   ]) {
     assert.ok(content.includes(title), `missing WORLD title: ${title}`);
+    assert.ok(html.includes(title), `PART I did not render title: ${title}`);
   }
 
-  assert.match(html, /world-axis__roadmap/i);
-  assert.match(html, /roadmap-ray-fade/i);
-  assert.match(html, /world-axis__second-hand/i);
+  assert.doesNotMatch(html, /world-character__art/i);
   assert.doesNotMatch(html, /JOKER/i);
+});
+
+test("server-renders PART II as an unopened archive", async () => {
+  const response = await render("/world/part-2");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /THE OUTSIDER/i);
+  assert.match(html, /PART II/i);
+  assert.match(html, /ARCHIVE NOT OPEN/i);
+  assert.doesNotMatch(html, /archive-axis__map/i);
 });
