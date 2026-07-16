@@ -33,8 +33,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
-        <link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
+        <link rel="icon" href={withBasePath("/favicon.svg?v=2")} type="image/svg+xml" />
+        <link rel="icon" href={withBasePath("/favicon-32.png?v=2")} sizes="32x32" type="image/png" />
+        <link rel="shortcut icon" href={withBasePath("/favicon.ico?v=2")} />
+        <link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png?v=2")} sizes="180x180" />
+        <link rel="manifest" href={withBasePath("/site.webmanifest?v=2")} />
       </head>
       <body>{children}</body>
     </html>
