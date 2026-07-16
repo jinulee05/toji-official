@@ -18,7 +18,7 @@ export function WorldShell({
   destination,
 }: {
   children: ReactNode;
-  destination: WorldDestination;
+  destination?: WorldDestination;
 }) {
   const [overlay, setOverlay] = useState<OverlayState>(null);
 
@@ -68,12 +68,12 @@ export function WorldShell({
 
   return (
     <SiteFrame
-      pageClassName={`site-shell--world site-shell--world-${destination}${
+      pageClassName={`site-shell--world site-shell--world-${destination ?? "not-found"}${
         overlay ? " has-open-overlay" : ""
       }`}
     >
       <SiteHeader
-        activeSection="world"
+        activeSection={destination ? "world" : undefined}
         activeWorldDestination={destination}
         overlay={overlay}
         onMusicOpen={() => openOverlay("music")}

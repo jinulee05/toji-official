@@ -1,4 +1,11 @@
+import { createRouteMetadata } from "../../site-url";
 import { WorldShell } from "../world-shell";
+
+export const metadata = createRouteMetadata({
+  title: "PART II | THE OUTSIDER | TOJI",
+  description: "THE OUTSIDER PART II coordinate archive.",
+  pathname: "/world/part-2",
+});
 
 export default function PartTwoPage() {
   return (

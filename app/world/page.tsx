@@ -1,5 +1,12 @@
 import { withBasePath } from "../runtime-paths";
+import { createRouteMetadata } from "../site-url";
 import { WorldShell } from "./world-shell";
+
+export const metadata = createRouteMetadata({
+  title: "WORLD | THE OUTSIDER | TOJI",
+  description: "The official character archive for THE OUTSIDER.",
+  pathname: "/world",
+});
 
 const worldCharacters = [
   {

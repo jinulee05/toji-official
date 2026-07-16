@@ -20,20 +20,6 @@ export type ContactLink = {
   label: string;
   value: string;
   href: string;
-  placeholder: boolean;
-};
-
-export type Episode = {
-  id: string;
-  coordinate: string;
-  title: string;
-  episodeLabel?: string;
-  description?: string[];
-  status: "available" | "locked";
-  slug?: string;
-  url?: string;
-  axis: "origin" | "horizontal" | "vertical";
-  position: number;
 };
 
 export const siteTitle = "TOJI | Official Site";
@@ -147,118 +133,27 @@ export const contactLinks: ContactLink[] = [
     label: "INSTAGRAM",
     value: "@sadistoji",
     href: "https://instagram.com/sadistoji",
-    placeholder: false,
   },
   {
     label: "YOUTUBE",
     value: "@SADISTOJI",
     href: "https://youtube.com/@SADISTOJI",
-    placeholder: false,
   },
   {
     label: "EMAIL",
     value: "toji@hunter-official.com",
     href: "mailto:toji@hunter-official.com",
-    placeholder: true,
   },
   {
     label: "BUSINESS / COLLABORATION",
     value: "INQUIRE",
     href: "mailto:toji@hunter-official.com?subject=Business%20Inquiry",
-    placeholder: true,
   },
 ];
 
 export const worldPrelude = [
   "A recurring world told through music, image and episodes.",
   "Crime. Memory. Desire. Disappearance.",
-];
-
-export const episodes: Episode[] = [
-  {
-    id: "the-man",
-    coordinate: "X",
-    title: "THE MAN",
-    status: "locked",
-    axis: "origin",
-    position: 0,
-  },
-  {
-    id: "the-girl",
-    coordinate: "0",
-    title: "THE GIRL",
-    status: "locked",
-    axis: "horizontal",
-    position: 1,
-  },
-  {
-    id: "rooftop-signal",
-    coordinate: "1",
-    title: "ROOFTOP SIGNAL",
-    episodeLabel: "EPISODE 01",
-    description: ["A signal from the roof.", "A woman who should not be seen."],
-    status: "available",
-    slug: "rooftop-signal",
-    url: "/world/rooftop-signal",
-    axis: "horizontal",
-    position: 2,
-  },
-  {
-    id: "hotel-rafflesia",
-    coordinate: "2",
-    title: "HOTEL RAFFLESIA",
-    status: "locked",
-    axis: "horizontal",
-    position: 3,
-  },
-  {
-    id: "backroom-nando",
-    coordinate: "3",
-    title: "BACKROOM NANDO (房)",
-    status: "locked",
-    axis: "horizontal",
-    position: 4,
-  },
-  {
-    id: "vista-house",
-    coordinate: "4",
-    title: "VISTA HOUSE",
-    status: "locked",
-    axis: "horizontal",
-    position: 5,
-  },
-  {
-    id: "zombie-man",
-    coordinate: "5",
-    title: "ZOMBIE MAN",
-    status: "locked",
-    axis: "horizontal",
-    position: 6,
-  },
-  {
-    id: "the-guidebook",
-    coordinate: "A",
-    title: "THE GUIDEBOOK",
-    status: "locked",
-    axis: "vertical",
-    position: 1,
-  },
-  {
-    id: "inochi-betting",
-    coordinate: "B",
-    title: "INOCHI BETTING",
-    status: "locked",
-    axis: "vertical",
-    position: 2,
-  },
-  {
-    id: "the-real-gambler-blues",
-    coordinate: "C",
-    title: "THE REAL GAMBLER BLUES",
-    status: "locked",
-    axis: "vertical",
-    position: 3,
-  },
 ];
 
 export const listenLinks: StreamingLink[] = [
@@ -274,9 +169,4 @@ export const listenLinks: StreamingLink[] = [
     label: "YOUTUBE",
     href: "https://www.youtube.com/@SADISTOJI",
   },
-];
-
-export const placeholderRegistry = [
-  "The contact email in app/site-content.ts should be confirmed or replaced.",
-  "Episode story routes are not implemented yet; node URLs in app/site-content.ts are future-ready placeholders.",
 ];

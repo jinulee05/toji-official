@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+const partOneEpisodes = JSON.parse(
+  await readFile(new URL("../content/world/part-1.json", import.meta.url), "utf8"),
+);
+
 async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
@@ -72,30 +76,23 @@ test("server-renders the complete PART I coordinate archive", async () => {
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  const content = await readFile(
-    new URL("../app/site-content.ts", import.meta.url),
-    "utf8",
-  );
   assert.match(html, /THE OUTSIDER/i);
   assert.match(html, /PART I/i);
   assert.match(html, /archive-axis__horizontal/i);
   assert.match(html, /archive-axis__vertical/i);
-  assert.match(html, /aria-label="X: THE MAN"[^>]*aria-pressed="true"/i);
+  assert.match(
+    html,
+    /aria-current="true"[^>]*aria-label="COORDINATE 01: THE MAN"/i,
+  );
+  assert.doesNotMatch(html, /EPISODE\s+\d+/i);
 
-  for (const title of [
-    "THE MAN",
-    "THE GIRL",
-    "ROOFTOP SIGNAL",
-    "HOTEL RAFFLESIA",
-    "BACKROOM NANDO (房)",
-    "VISTA HOUSE",
-    "ZOMBIE MAN",
-    "THE GUIDEBOOK",
-    "INOCHI BETTING",
-    "THE REAL GAMBLER BLUES",
-  ]) {
-    assert.ok(content.includes(title), `missing WORLD title: ${title}`);
+  for (const episode of partOneEpisodes) {
+    const { title } = episode;
     assert.ok(html.includes(title), `PART I did not render title: ${title}`);
+    assert.match(
+      html,
+      new RegExp(`href="/world/part-1/${episode.slug}"`, "i"),
+    );
   }
 
   assert.doesNotMatch(html, /world-character__art/i);
@@ -111,4 +108,67 @@ test("server-renders PART II as an unopened archive", async () => {
   assert.match(html, /PART II/i);
   assert.match(html, /ARCHIVE NOT OPEN/i);
   assert.doesNotMatch(html, /archive-axis__map/i);
+});
+
+test("server-renders every PART I coordinate as a restricted reader route", async () => {
+  for (const episode of partOneEpisodes) {
+    const response = await render(`/world/part-1/${episode.slug}`);
+    assert.equal(response.status, 200, `reader failed: ${episode.slug}`);
+
+    const html = await response.text();
+    assert.match(html, new RegExp(`COORDINATE ${episode.coordinate}`, "i"));
+    assert.ok(html.includes(episode.title), `reader title missing: ${episode.title}`);
+    assert.match(html, /RESTRICTED ACCESS/i);
+    assert.match(html, /This coordinate is currently sealed\./i);
+    assert.match(html, /name="robots" content="noindex, nofollow, nocache"/i);
+    assert.match(
+      html,
+      new RegExp(
+        `rel="canonical" href="https://sadistoji\\.com/world/part-1/${episode.slug}"`,
+        "i",
+      ),
+    );
+    assert.match(html, /href="\/world\/part-1"/i);
+  }
+});
+
+test("reader navigation respects first and last coordinate boundaries", async () => {
+  const firstResponse = await render("/world/part-1/the-man");
+  const firstHtml = await firstResponse.text();
+  assert.doesNotMatch(firstHtml, />PREVIOUS</i);
+  assert.match(firstHtml, /href="\/world\/part-1\/the-girl"/i);
+
+  const middleResponse = await render("/world/part-1/rooftop-signal");
+  const middleHtml = await middleResponse.text();
+  assert.match(middleHtml, /href="\/world\/part-1\/the-girl"/i);
+  assert.match(middleHtml, /href="\/world\/part-1\/hotel-rafflesia"/i);
+  assert.match(middleHtml, /ALL COORDINATES/i);
+
+  const lastResponse = await render("/world/part-1/the-real-gambler-blues");
+  const lastHtml = await lastResponse.text();
+  assert.match(lastHtml, /href="\/world\/part-1\/inochi-betting"/i);
+  assert.doesNotMatch(lastHtml, />NEXT</i);
+});
+
+test("unknown coordinate routes return the authored 404 page", async () => {
+  const response = await render("/world/part-1/not-a-coordinate");
+  assert.equal(response.status, 404);
+
+  const html = await response.text();
+  assert.match(html, /404 \/ COORDINATE NOT FOUND/i);
+  assert.match(html, /RETURN TO WORLD/i);
+});
+
+test("canonical sitemap and robots use sadistoji.com", async () => {
+  const sitemapResponse = await render("/sitemap.xml");
+  assert.equal(sitemapResponse.status, 200);
+  const sitemap = await sitemapResponse.text();
+  assert.match(sitemap, /https:\/\/sadistoji\.com\/world\/part-1/i);
+  assert.doesNotMatch(sitemap, /chatgpt\.site/i);
+
+  const robotsResponse = await render("/robots.txt");
+  assert.equal(robotsResponse.status, 200);
+  const robots = await robotsResponse.text();
+  assert.match(robots, /Host: https:\/\/sadistoji\.com/i);
+  assert.match(robots, /Sitemap: https:\/\/sadistoji\.com\/sitemap\.xml/i);
 });
