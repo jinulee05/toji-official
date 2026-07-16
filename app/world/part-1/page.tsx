@@ -1,8 +1,16 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { episodes, type Episode } from "../../site-content";
+import Link from "next/link";
+import {
+  getCoordinateLabel,
+  getWorldEpisodePath,
+  getWorldPartEpisodes,
+  type WorldEpisode,
+} from "../../world-content";
 import { WorldShell } from "../world-shell";
+
+const episodes = getWorldPartEpisodes("part-1");
 
 const horizontalEpisodes = episodes
   .filter((episode) => episode.axis === "origin" || episode.axis === "horizontal")
@@ -13,9 +21,9 @@ const verticalEpisodes = episodes
   .sort((a, b) => a.position - b.position);
 
 export default function PartOnePage() {
-  const [selectedId, setSelectedId] = useState("the-man");
+  const [selectedId, setSelectedId] = useState(horizontalEpisodes[0].slug);
   const selectedEpisode =
-    episodes.find((episode) => episode.id === selectedId) ?? horizontalEpisodes[0];
+    episodes.find((episode) => episode.slug === selectedId) ?? horizontalEpisodes[0];
 
   return (
     <WorldShell destination="part-1">
@@ -28,12 +36,12 @@ export default function PartOnePage() {
         <div className="archive-axis__map">
           <div className="archive-axis__horizontal" aria-label="Horizontal coordinates">
             {horizontalEpisodes.map((episode, index) => (
-              <Fragment key={episode.id}>
+              <Fragment key={episode.slug}>
                 {index > 0 ? <span className="archive-axis__line" aria-hidden="true" /> : null}
                 <CoordinateNode
                   episode={episode}
-                  selected={episode.id === selectedEpisode.id}
-                  onSelect={setSelectedId}
+                  selected={episode.slug === selectedEpisode.slug}
+                  onPreview={setSelectedId}
                 />
               </Fragment>
             ))}
@@ -41,15 +49,15 @@ export default function PartOnePage() {
 
           <div className="archive-axis__vertical" aria-label="Vertical coordinates">
             {verticalEpisodes.map((episode) => (
-              <Fragment key={episode.id}>
+              <Fragment key={episode.slug}>
                 <span
                   className="archive-axis__line archive-axis__line--vertical"
                   aria-hidden="true"
                 />
                 <CoordinateNode
                   episode={episode}
-                  selected={episode.id === selectedEpisode.id}
-                  onSelect={setSelectedId}
+                  selected={episode.slug === selectedEpisode.slug}
+                  onPreview={setSelectedId}
                 />
               </Fragment>
             ))}
@@ -65,29 +73,30 @@ export default function PartOnePage() {
 function CoordinateNode({
   episode,
   selected,
-  onSelect,
+  onPreview,
 }: {
-  episode: Episode;
+  episode: WorldEpisode;
   selected: boolean;
-  onSelect: (id: string) => void;
+  onPreview: (slug: string) => void;
 }) {
   return (
-    <button
-      aria-label={`${episode.coordinate}: ${episode.title}`}
-      aria-pressed={selected}
+    <Link
+      aria-current={selected ? "true" : undefined}
+      aria-label={`${getCoordinateLabel(episode)}: ${episode.title}`}
       className={`archive-axis__node${episode.axis === "origin" ? " is-origin" : ""}${
         selected ? " is-selected" : ""
       }`}
-      onClick={() => onSelect(episode.id)}
-      type="button"
+      href={getWorldEpisodePath("part-1", episode)}
+      onFocus={() => onPreview(episode.slug)}
+      onMouseEnter={() => onPreview(episode.slug)}
     >
-      <span className="archive-axis__coordinate">{episode.coordinate}</span>
+      <span className="archive-axis__coordinate">{episode.axisCoordinate}</span>
       <span className="archive-axis__node-title">{episode.title}</span>
-    </button>
+    </Link>
   );
 }
 
-function EpisodeDetail({ episode }: { episode: Episode }) {
+function EpisodeDetail({ episode }: { episode: WorldEpisode }) {
   const titleClass =
     episode.title.length > 22
       ? " is-long"
@@ -97,20 +106,27 @@ function EpisodeDetail({ episode }: { episode: Episode }) {
 
   return (
     <article className="archive-axis__detail" aria-live="polite">
-      <div className="archive-axis__detail-body" key={episode.id}>
-        <span>{episode.episodeLabel ?? `COORDINATE ${episode.coordinate}`}</span>
+      <Link
+        aria-label={`Read ${getCoordinateLabel(episode)}: ${episode.title}`}
+        className="archive-axis__detail-link"
+        href={getWorldEpisodePath("part-1", episode)}
+        key={episode.slug}
+      >
+        <div className="archive-axis__detail-body">
+        <span>{getCoordinateLabel(episode)}</span>
         <h2 className={titleClass}>{episode.title}</h2>
-        {episode.description ? (
+        {episode.summary.length > 0 ? (
           <div className="archive-axis__description">
-            {episode.description.map((line) => (
+            {episode.summary.map((line) => (
               <p key={line}>{line}</p>
             ))}
           </div>
         ) : null}
         <p className="archive-axis__status">
-          {episode.status === "available" ? "ARCHIVE OPEN" : "ARCHIVE LOCKED"}
+          {episode.published ? "ARCHIVE OPEN" : "ARCHIVE LOCKED"}
         </p>
-      </div>
+        </div>
+      </Link>
     </article>
   );
 }

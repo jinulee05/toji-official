@@ -4,6 +4,7 @@ import handler from "vinext/server/app-router-entry";
 
 interface Env {
   ASSETS: Fetcher;
+  CANONICAL_DOMAIN_READY?: string;
   DB: D1Database;
   IMAGES: {
     input(stream: ReadableStream): {
@@ -13,6 +14,9 @@ interface Env {
     };
   };
 }
+
+const CANONICAL_HOST = "sadistoji.com";
+const PREVIEW_HOST = "toji-official-20260716.jinuleefire.chatgpt.site";
 
 interface ExecutionContext {
   waitUntil(promise: Promise<unknown>): void;
@@ -28,6 +32,17 @@ interface ExecutionContext {
 const worker = {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+
+    const shouldRedirectToCanonicalHost =
+      url.hostname === `www.${CANONICAL_HOST}` ||
+      (env?.CANONICAL_DOMAIN_READY === "true" && url.hostname === PREVIEW_HOST);
+
+    if (shouldRedirectToCanonicalHost) {
+      url.protocol = "https:";
+      url.hostname = CANONICAL_HOST;
+      url.port = "";
+      return Response.redirect(url.toString(), 308);
+    }
 
     if (url.pathname === "/_vinext/image") {
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
