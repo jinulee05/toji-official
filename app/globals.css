@@ -425,58 +425,21 @@ img {
 
 .release-card__art {
   position: relative;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1;
   overflow: hidden;
   border: 1px solid var(--rule-color);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 40%),
-    linear-gradient(180deg, #111 0%, #010101 100%);
+  background: #050505;
   filter: brightness(0.72);
   transition:
     border-color 220ms ease,
     filter 220ms ease;
 }
 
-.release-card__art::before,
-.release-card__art::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-}
-
-.release-card__art--skyline::before {
-  opacity: 0.74;
-  background:
-    linear-gradient(180deg, transparent 64%, rgba(255, 255, 255, 0.08) 65%, transparent 67%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 8%, transparent 8% 12%, rgba(255, 255, 255, 0.1) 12% 16%, transparent 16% 21%, rgba(255, 255, 255, 0.12) 21% 26%, transparent 26% 36%, rgba(255, 255, 255, 0.1) 36% 42%, transparent 42% 54%, rgba(255, 255, 255, 0.06) 54% 61%, transparent 61% 71%, rgba(255, 255, 255, 0.08) 71% 78%, transparent 78%);
-}
-
-.release-card__art--glass::before {
-  inset: 12% 21% 16%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 50% 50% 18% 18%;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 76%);
-}
-
-.release-card__art--glass::after {
-  inset: 44% 52% 16% 10%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  opacity: 0.68;
-  transform: rotate(16deg);
-}
-
-.release-card__art span {
-  position: absolute;
-  right: 0.72rem;
-  bottom: 0.58rem;
-  left: 0.72rem;
-  z-index: 1;
-  color: rgba(244, 239, 234, 0.5);
-  font-size: clamp(0.42rem, 0.44vw, 0.55rem);
-  letter-spacing: 0.14em;
+.release-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .release-card__identity {
@@ -756,6 +719,7 @@ img {
 }
 
 .overlay-release-list,
+.overlay-more-list,
 .overlay-contact-list {
   display: grid;
 }
@@ -828,6 +792,48 @@ img {
 .overlay-release-row:hover strong,
 .overlay-contact-row:hover > span:first-child {
   opacity: 1;
+}
+
+.overlay-more-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.9fr) minmax(24rem, 1.6fr);
+  gap: clamp(1rem, 2vw, 2.2rem);
+  align-items: baseline;
+  padding-block: clamp(0.9rem, 1.2vw, 1.3rem);
+  border-bottom: 1px solid var(--rule-color);
+}
+
+.overlay-more-row > strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.65vw, 1.85rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  opacity: 0.68;
+  transform: scaleX(0.8);
+  transform-origin: left center;
+}
+
+.overlay-more-row > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.8rem, 1.5vw, 1.65rem);
+  justify-content: flex-end;
+  color: rgba(244, 239, 234, 0.58);
+  font-family: var(--font-meta);
+  font-size: clamp(0.58rem, 0.65vw, 0.76rem);
+  letter-spacing: 0.08em;
+}
+
+.overlay-more-row a {
+  text-decoration: none;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.overlay-more-row a:hover {
+  color: var(--white);
+  transform: translateY(-1px);
 }
 
 .site-shell--world .site-stage {
@@ -1558,13 +1564,6 @@ img {
     font-size: 0.43rem;
   }
 
-  .release-card__art span {
-    right: 0.4rem;
-    bottom: 0.35rem;
-    left: 0.4rem;
-    font-size: 0.35rem;
-  }
-
   .content-section--contact {
     margin-top: 5.3rem;
     margin-bottom: 8rem;
@@ -1618,6 +1617,22 @@ img {
 
   .overlay-release-row strong {
     font-size: 1.75rem;
+  }
+
+  .overlay-more-row {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    padding-block: 0.8rem;
+  }
+
+  .overlay-more-row > strong {
+    font-size: 1.1rem;
+  }
+
+  .overlay-more-row > div {
+    gap: 0.75rem;
+    justify-content: flex-start;
+    font-size: 0.52rem;
   }
 
   .overlay-contact-row {

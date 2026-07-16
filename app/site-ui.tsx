@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { listenLinks, releases } from "./site-content";
 import { withBasePath } from "./runtime-paths";
 
 type HeaderProps = {
@@ -274,6 +275,78 @@ export function OverlayFrame({
         </button>
         {children}
       </div>
+    </div>
+  );
+}
+
+export function MusicOverlayContent({
+  linkReleasesToHome = false,
+}: {
+  linkReleasesToHome?: boolean;
+}) {
+  const releaseHrefPrefix = linkReleasesToHome
+    ? `${withBasePath("/").replace(/\/$/, "")}/`
+    : "";
+
+  return (
+    <div className="overlay-block">
+      <h2 className="overlay-block__title">MUSIC</h2>
+      <section className="overlay-section">
+        <h3>LISTEN</h3>
+        <div className="overlay-links">
+          {listenLinks.map((link) => (
+            <a
+              aria-label={`Listen to TOJI on ${link.label}`}
+              href={link.href}
+              key={link.label}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {link.label}
+            </a>
+          ))}
+          <span aria-hidden="true">→</span>
+        </div>
+      </section>
+      <section className="overlay-section">
+        <h3>RELEASES</h3>
+        <div className="overlay-release-list">
+          {releases.map((release) => (
+            <a
+              className="overlay-release-row"
+              href={`${releaseHrefPrefix}#${release.id}`}
+              key={release.id}
+            >
+              <span>{release.index}</span>
+              <strong>{release.title}</strong>
+              <span aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </section>
+      <section className="overlay-section overlay-section--more">
+        <h3>MORE PLATFORMS</h3>
+        <div className="overlay-more-list">
+          {releases.map((release) => (
+            <div className="overlay-more-row" key={release.id}>
+              <strong>{release.title}</strong>
+              <div aria-label={`${release.title} additional streaming links`}>
+                {release.moreLinks.map((link) => (
+                  <a
+                    aria-label={`Listen to ${release.title} on ${link.label}`}
+                    href={link.href}
+                    key={link.label}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

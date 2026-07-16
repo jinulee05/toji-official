@@ -1,14 +1,10 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import {
-  contactLinks,
-  listenLinks,
-  releases,
-} from "../site-content";
-import { withBasePath } from "../runtime-paths";
+import { contactLinks } from "../site-content";
 import {
   FooterMark,
+  MusicOverlayContent,
   OverlayFrame,
   SiteFrame,
   SiteHeader,
@@ -89,36 +85,7 @@ export function WorldShell({
       <FooterMark />
 
       <OverlayFrame title="MUSIC" open={overlay === "music"} onClose={closeOverlay}>
-        <div className="overlay-block">
-          <h2 className="overlay-block__title">MUSIC</h2>
-          <section className="overlay-section">
-            <h3>LISTEN</h3>
-            <div className="overlay-links">
-              {listenLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
-                  {link.label}
-                </a>
-              ))}
-              <span aria-hidden="true">→</span>
-            </div>
-          </section>
-          <section className="overlay-section">
-            <h3>RELEASES</h3>
-            <div className="overlay-release-list">
-              {releases.map((release) => (
-                <a
-                  className="overlay-release-row"
-                  href={`${withBasePath("/")}#${release.id}`}
-                  key={release.id}
-                >
-                  <span>{release.index}</span>
-                  <strong>{release.title}</strong>
-                  <span aria-hidden="true">→</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        </div>
+        <MusicOverlayContent linkReleasesToHome />
       </OverlayFrame>
 
       <OverlayFrame

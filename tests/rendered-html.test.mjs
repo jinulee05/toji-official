@@ -38,6 +38,12 @@ test("server-renders the final TOJI hero system", async () => {
   assert.doesNotMatch(html, /hero-panel__title/i);
   assert.doesNotMatch(html, /hero-panel__ink/i);
   assert.doesNotMatch(html, /ARTIST \/ PRODUCER \/|ARTIST \/ PRODUCER/i);
+  assert.match(html, /src="\/toji\/releases\/rooftop-signal\.jpg"/i);
+  assert.match(html, /src="\/toji\/releases\/medium\.jpg"/i);
+  assert.match(html, /open\.spotify\.com\/track\/3ST6arVsLwU53mYWO4CvIY/i);
+  assert.match(html, /open\.spotify\.com\/track\/0CaGOfhW8XIfPPlvDVm8Vh/i);
+  assert.match(html, /MORE PLATFORMS/i);
+  assert.doesNotMatch(html, /example\.com|OFFICIAL ARTWORK PENDING/i);
   assert.doesNotMatch(html, /JOKER/i);
 });
 
