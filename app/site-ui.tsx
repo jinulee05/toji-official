@@ -5,7 +5,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type CSSProperties,
   type ReactNode,
 } from "react";
 import { withBasePath } from "./runtime-paths";
@@ -35,30 +34,42 @@ export function SiteFrame({
     }
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const smokeVideo = stage.querySelector<HTMLVideoElement>(
+      ".global-smoke__video",
+    );
     let animationFrame = 0;
 
     const updateSmokePosition = () => {
       animationFrame = 0;
-      const scrollY = reducedMotion.matches ? 0 : window.scrollY;
+      const displacementLimit = window.innerWidth <= 688 ? 20 : 48;
+      const displacement = reducedMotion.matches
+        ? 0
+        : Math.min(window.scrollY * 0.026, displacementLimit);
 
-      stage.style.setProperty("--smoke-y-north", `${scrollY * 0.08}px`);
-      stage.style.setProperty("--smoke-y-east", `${scrollY * -0.055}px`);
-      stage.style.setProperty("--smoke-y-south", `${scrollY * 0.12}px`);
-      stage.style.setProperty("--smoke-y-center", `${scrollY * -0.035}px`);
-      stage.style.setProperty("--smoke-y-low", `${scrollY * 0.065}px`);
       stage.style.setProperty(
-        "--smoke-x-drift",
-        `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * 18}px`,
-      );
-      stage.style.setProperty(
-        "--smoke-x-reverse",
-        `${reducedMotion.matches ? 0 : Math.sin(scrollY / 620) * -13}px`,
+        "--global-smoke-scroll-y",
+        `${displacement.toFixed(2)}px`,
       );
     };
 
     const requestSmokeUpdate = () => {
       if (!animationFrame) {
         animationFrame = window.requestAnimationFrame(updateSmokePosition);
+      }
+    };
+
+    const syncReducedMotion = () => {
+      requestSmokeUpdate();
+
+      if (!smokeVideo) {
+        return;
+      }
+
+      if (reducedMotion.matches) {
+        smokeVideo.pause();
+        smokeVideo.currentTime = 0;
+      } else {
+        void smokeVideo.play().catch(() => undefined);
       }
     };
 
@@ -77,16 +88,16 @@ export function SiteFrame({
 
     stage.classList.add("motion-ready");
     revealTargets.forEach((target) => revealObserver.observe(target));
-    updateSmokePosition();
+    syncReducedMotion();
 
     window.addEventListener("scroll", requestSmokeUpdate, { passive: true });
     window.addEventListener("resize", requestSmokeUpdate, { passive: true });
-    reducedMotion.addEventListener("change", requestSmokeUpdate);
+    reducedMotion.addEventListener("change", syncReducedMotion);
 
     return () => {
       window.removeEventListener("scroll", requestSmokeUpdate);
       window.removeEventListener("resize", requestSmokeUpdate);
-      reducedMotion.removeEventListener("change", requestSmokeUpdate);
+      reducedMotion.removeEventListener("change", syncReducedMotion);
       revealObserver.disconnect();
       window.cancelAnimationFrame(animationFrame);
     };
@@ -94,17 +105,8 @@ export function SiteFrame({
 
   return (
     <main className={`site-shell ${pageClassName}`.trim()}>
-      <div
-        className="site-stage"
-        ref={stageRef}
-        style={
-          {
-            "--grain-texture": `url("${withBasePath("/toji/grain-original.svg")}")`,
-          } as CSSProperties
-        }
-      >
-        <TextureLayer />
-        <SmokeField />
+      <div className="site-stage" ref={stageRef}>
+        <GlobalSmokeBackground />
         {children}
       </div>
     </main>
@@ -205,20 +207,6 @@ export function SectionMarker() {
   return <div className="section-marker" aria-hidden="true" />;
 }
 
-export function ImpactTransition({
-  variant,
-}: {
-  variant: "hero" | "music";
-}) {
-  return (
-    <div className={`impact-transition impact-transition--${variant}`} aria-hidden="true">
-      <span className="impact-transition__ink" />
-      <span className="impact-transition__streaks" />
-      <span className="impact-transition__dust" />
-    </div>
-  );
-}
-
 export function FooterMark() {
   return (
     <div className="footer-mark" aria-label="Hunter">
@@ -290,20 +278,32 @@ export function OverlayFrame({
   );
 }
 
-function SmokeField() {
+function GlobalSmokeBackground() {
   return (
-    <div className="smoke-field" aria-hidden="true">
-      <span className="smoke-field__layer smoke-field__layer--north" />
-      <span className="smoke-field__layer smoke-field__layer--east" />
-      <span className="smoke-field__layer smoke-field__layer--south" />
-      <span className="smoke-field__layer smoke-field__layer--center" />
-      <span className="smoke-field__layer smoke-field__layer--low" />
+    <div className="global-smoke" aria-hidden="true">
+      <video
+        autoPlay
+        className="global-smoke__video"
+        disablePictureInPicture
+        loop
+        muted
+        playsInline
+        poster={withBasePath("/toji/smoke-poster.jpg")}
+        preload="metadata"
+        tabIndex={-1}
+      >
+        <source
+          src={withBasePath("/toji/smoke-loop.webm")}
+          type="video/webm"
+        />
+        <source
+          src={withBasePath("/toji/smoke-loop.mp4")}
+          type="video/mp4"
+        />
+      </video>
+      <span className="global-smoke__veil" />
     </div>
   );
-}
-
-function TextureLayer() {
-  return <div className="texture-layer" aria-hidden="true" />;
 }
 
 function navState(
