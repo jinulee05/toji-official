@@ -141,13 +141,8 @@ export const contactLinks: ContactLink[] = [
   },
   {
     label: "EMAIL",
-    value: "toji@hunter-official.com",
-    href: "mailto:toji@hunter-official.com",
-  },
-  {
-    label: "BUSINESS / COLLABORATION",
-    value: "INQUIRE",
-    href: "mailto:toji@hunter-official.com?subject=Business%20Inquiry",
+    value: "sadistoji@gmail.com",
+    href: "mailto:sadistoji@gmail.com",
   },
 ];
 
