@@ -1,7 +1,6 @@
 export type StreamingLink = {
   label: string;
   href: string;
-  placeholder: boolean;
 };
 
 export type Release = {
@@ -9,10 +8,12 @@ export type Release = {
   index: string;
   title: string;
   date: string;
+  isrc: string;
   description: string[];
-  artworkLabel: string;
-  artworkVariant: "skyline" | "glass";
+  artwork: string;
+  artworkAlt: string;
   links: StreamingLink[];
+  moreLinks: StreamingLink[];
 };
 
 export type ContactLink = {
@@ -52,24 +53,44 @@ export const releases: Release[] = [
     index: "01",
     title: "ROOFTOP SIGNAL",
     date: "2026.03.10",
+    isrc: "KRMIM2618971",
     description: ["A cold signal from the roof."],
-    artworkLabel: "OFFICIAL ARTWORK PENDING",
-    artworkVariant: "skyline",
+    artwork: "/toji/releases/rooftop-signal.jpg",
+    artworkAlt: "Rooftop Signal single cover artwork",
     links: [
       {
         label: "SPOTIFY",
-        href: "https://example.com/toji/rooftop-signal/spotify",
-        placeholder: true,
-      },
-      {
-        label: "YOUTUBE",
-        href: "https://example.com/toji/rooftop-signal/youtube",
-        placeholder: true,
+        href: "https://open.spotify.com/track/3ST6arVsLwU53mYWO4CvIY",
       },
       {
         label: "APPLE MUSIC",
-        href: "https://example.com/toji/rooftop-signal/apple-music",
-        placeholder: true,
+        href: "https://music.apple.com/kr/album/rooftop-signal-single/1882636501",
+      },
+      {
+        label: "YOUTUBE",
+        href: "https://www.youtube.com/watch?v=o-nGVseti_U",
+      },
+    ],
+    moreLinks: [
+      {
+        label: "MELON",
+        href: "https://www.melon.com/song/detail.htm?songId=601478511",
+      },
+      {
+        label: "GENIE",
+        href: "https://www.genie.co.kr/detail/songInfo?xgnm=114158625",
+      },
+      {
+        label: "BUGS",
+        href: "https://music.bugs.co.kr/track/33861782",
+      },
+      {
+        label: "FLO",
+        href: "https://www.music-flo.com/detail/track/578461242/details",
+      },
+      {
+        label: "VIBE",
+        href: "https://vibe.naver.com/track/101534558",
       },
     ],
   },
@@ -78,24 +99,44 @@ export const releases: Release[] = [
     index: "02",
     title: "MEDIUM",
     date: "2026.06.18",
+    isrc: "KSB062600073",
     description: ["A night that does not end.", "It only loses temperature."],
-    artworkLabel: "OFFICIAL ARTWORK PENDING",
-    artworkVariant: "glass",
+    artwork: "/toji/releases/medium.jpg",
+    artworkAlt: "MEDIUM single cover artwork",
     links: [
       {
         label: "SPOTIFY",
-        href: "https://example.com/toji/medium/spotify",
-        placeholder: true,
-      },
-      {
-        label: "YOUTUBE",
-        href: "https://example.com/toji/medium/youtube",
-        placeholder: true,
+        href: "https://open.spotify.com/track/0CaGOfhW8XIfPPlvDVm8Vh",
       },
       {
         label: "APPLE MUSIC",
-        href: "https://example.com/toji/medium/apple-music",
-        placeholder: true,
+        href: "https://music.apple.com/kr/album/medium-single/6780741693",
+      },
+      {
+        label: "YOUTUBE",
+        href: "https://www.youtube.com/watch?v=reijMEG7wt8",
+      },
+    ],
+    moreLinks: [
+      {
+        label: "MELON",
+        href: "https://www.melon.com/song/detail.htm?songId=602291481",
+      },
+      {
+        label: "GENIE",
+        href: "https://www.genie.co.kr/detail/songInfo?xgnm=115555812",
+      },
+      {
+        label: "BUGS",
+        href: "https://music.bugs.co.kr/track/33974423",
+      },
+      {
+        label: "FLO",
+        href: "https://www.music-flo.com/detail/track/593693794/details",
+      },
+      {
+        label: "VIBE",
+        href: "https://vibe.naver.com/track/104832407",
       },
     ],
   },
@@ -223,24 +264,19 @@ export const episodes: Episode[] = [
 export const listenLinks: StreamingLink[] = [
   {
     label: "SPOTIFY",
-    href: "https://example.com/toji/listen/spotify",
-    placeholder: true,
-  },
-  {
-    label: "YOUTUBE",
-    href: "https://example.com/toji/listen/youtube",
-    placeholder: true,
+    href: "https://open.spotify.com/artist/2lbSXIQ6YdAghi6iQ1YO20",
   },
   {
     label: "APPLE MUSIC",
-    href: "https://example.com/toji/listen/apple-music",
-    placeholder: true,
+    href: "https://music.apple.com/kr/artist/toji/1882571005",
+  },
+  {
+    label: "YOUTUBE",
+    href: "https://www.youtube.com/@SADISTOJI",
   },
 ];
 
 export const placeholderRegistry = [
-  "All streaming URLs in app/site-content.ts use example.com placeholders.",
   "The contact email in app/site-content.ts should be confirmed or replaced.",
-  "Release artwork is represented by local temporary placeholders in CSS and should be replaced when official art is provided.",
   "Episode story routes are not implemented yet; node URLs in app/site-content.ts are future-ready placeholders.",
 ];

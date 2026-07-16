@@ -6,12 +6,12 @@ import {
   artistStatement,
   contactLinks,
   japaneseStatement,
-  listenLinks,
   releases,
 } from "./site-content";
 import { withBasePath } from "./runtime-paths";
 import {
   FooterMark,
+  MusicOverlayContent,
   OverlayFrame,
   SectionMarker,
   SiteFrame,
@@ -107,12 +107,17 @@ export default function Home() {
           {releases.map((release) => (
             <article className="release-card" id={release.id} key={release.id}>
               <span className="release-card__index">{release.index}</span>
-              <div
-                className={`release-card__art release-card__art--${release.artworkVariant}`}
-                aria-label={release.artworkLabel}
-                role="img"
-              >
-                <span>{release.artworkLabel}</span>
+              <div className="release-card__art">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt={release.artworkAlt}
+                  className="release-card__image"
+                  decoding="async"
+                  height="3000"
+                  loading="lazy"
+                  src={withBasePath(release.artwork)}
+                  width="3000"
+                />
               </div>
               <div className="release-card__identity">
                 <h3>{release.title}</h3>
@@ -125,7 +130,13 @@ export default function Home() {
               </div>
               <div className="release-card__links" aria-label={`${release.title} streaming links`}>
                 {release.links.map((link) => (
-                  <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
+                  <a
+                    aria-label={`Listen to ${release.title} on ${link.label}`}
+                    href={link.href}
+                    key={link.label}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     {link.label}
                   </a>
                 ))}
@@ -153,36 +164,7 @@ export default function Home() {
       <FooterMark />
 
       <OverlayFrame title="MUSIC" open={overlay === "music"} onClose={closeOverlay}>
-        <div className="overlay-block">
-          <h2 className="overlay-block__title">MUSIC</h2>
-          <section className="overlay-section">
-            <h3>LISTEN</h3>
-            <div className="overlay-links">
-              {listenLinks.map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
-                  {link.label}
-                </a>
-              ))}
-              <span aria-hidden="true">→</span>
-            </div>
-          </section>
-          <section className="overlay-section">
-            <h3>RELEASES</h3>
-            <div className="overlay-release-list">
-              {releases.map((release) => (
-                <a
-                  className="overlay-release-row"
-                  href={`#${release.id}`}
-                  key={release.id}
-                >
-                  <span>{release.index}</span>
-                  <strong>{release.title}</strong>
-                  <span aria-hidden="true">→</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        </div>
+        <MusicOverlayContent />
       </OverlayFrame>
 
       <OverlayFrame
