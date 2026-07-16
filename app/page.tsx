@@ -12,7 +12,6 @@ import {
 import { withBasePath } from "./runtime-paths";
 import {
   FooterMark,
-  ImpactTransition,
   OverlayFrame,
   SectionMarker,
   SiteFrame,
@@ -84,12 +83,10 @@ export default function Home() {
             alt="TOJI in a black suit and tie with a faceless white stitched head against an oxblood field."
           />
         </div>
-        <h1 className="hero-panel__title" id="toji-heading">
+        <h1 className="visually-hidden" id="toji-heading">
           TOJI
         </h1>
       </section>
-
-      <ImpactTransition variant="hero" />
 
       <section className="statement-panel reveal-section" aria-label="Artist statement">
         <SectionMarker />
@@ -138,8 +135,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <ImpactTransition variant="music" />
 
       <section className="content-section content-section--contact reveal-section" aria-labelledby="contact-section-title">
         <div className="content-section__heading">

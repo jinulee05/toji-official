@@ -31,8 +31,11 @@ test("server-renders the final TOJI hero system", async () => {
   const html = await response.text();
   assert.match(html, /<title>TOJI \| Official Site<\/title>/i);
   assert.match(html, /src="\/toji\/hero-final\.png"/i);
-  assert.match(html, /grain-original\.svg/i);
-  assert.match(html, /hero-panel__title/i);
+  assert.match(html, /src="\/toji\/smoke-loop\.webm"/i);
+  assert.match(html, /src="\/toji\/smoke-loop\.mp4"/i);
+  assert.match(html, /class="visually-hidden"[^>]*>\s*TOJI/i);
+  assert.doesNotMatch(html, /grain-original\.svg|texture-layer|impact-transition/i);
+  assert.doesNotMatch(html, /hero-panel__title/i);
   assert.doesNotMatch(html, /hero-panel__ink/i);
   assert.doesNotMatch(html, /ARTIST \/ PRODUCER \/|ARTIST \/ PRODUCER/i);
   assert.doesNotMatch(html, /JOKER/i);
@@ -50,8 +53,8 @@ test("server-renders WORLD as a character archive", async () => {
   assert.match(html, /JANE/i);
   assert.match(html, /THE MAN/i);
   assert.match(html, /src="\/toji\/world\/toji\.png"/i);
-  assert.match(html, /src="\/toji\/world\/rin\.png"/i);
-  assert.match(html, /src="\/toji\/world\/jane\.png"/i);
+  assert.match(html, /src="\/toji\/world\/rin-display\.png"/i);
+  assert.match(html, /src="\/toji\/world\/jane-display\.png"/i);
   assert.match(html, /href="\/world\/part-1"/i);
   assert.match(html, /href="\/world\/part-2"/i);
   assert.doesNotMatch(html, /archive-axis__map/i);

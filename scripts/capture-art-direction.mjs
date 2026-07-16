@@ -46,7 +46,8 @@ for (const capture of captures) {
     clientWidth: document.documentElement.clientWidth,
     scrollWidth: document.documentElement.scrollWidth,
     characterImages: Array.from(document.querySelectorAll(".hero-panel__art img")).map((image) => image.getAttribute("src")),
-    smokeNorth: getComputedStyle(document.querySelector(".site-stage")).getPropertyValue("--smoke-y-north").trim(),
+    smokeVideo: document.querySelector(".global-smoke__video")?.currentSrc ?? null,
+    smokeScrollY: getComputedStyle(document.querySelector(".site-stage")).getPropertyValue("--global-smoke-scroll-y").trim(),
   }));
 
   await page.screenshot({
@@ -59,7 +60,7 @@ for (const capture of captures) {
     await page.evaluate(() => window.scrollTo(0, 620));
     await page.waitForTimeout(100);
     smokeAfterScroll = await page.evaluate(() =>
-      getComputedStyle(document.querySelector(".site-stage")).getPropertyValue("--smoke-y-north").trim(),
+      getComputedStyle(document.querySelector(".site-stage")).getPropertyValue("--global-smoke-scroll-y").trim(),
     );
   }
 

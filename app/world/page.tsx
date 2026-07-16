@@ -11,13 +11,13 @@ const worldCharacters = [
   {
     index: "02",
     name: "RIN",
-    image: "/toji/world/rin.png",
+    image: "/toji/world/rin-display.png",
     imageClassName: "is-rin",
   },
   {
     index: "03",
     name: "JANE",
-    image: "/toji/world/jane.png",
+    image: "/toji/world/jane-display.png",
     imageClassName: "is-jane",
   },
   {
