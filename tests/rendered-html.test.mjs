@@ -82,7 +82,7 @@ test("server-renders the complete PART I coordinate archive", async () => {
   assert.match(html, /archive-axis__vertical/i);
   assert.match(
     html,
-    /aria-current="true"[^>]*aria-label="COORDINATE 01: THE MAN"/i,
+    /aria-current="true"[^>]*aria-label="COORDINATE X: A DROP"/i,
   );
   assert.doesNotMatch(html, /EPISODE\s+\d+/i);
 
@@ -110,7 +110,7 @@ test("server-renders PART II as an unopened archive", async () => {
   assert.doesNotMatch(html, /archive-axis__map/i);
 });
 
-test("server-renders every PART I coordinate as a restricted reader route", async () => {
+test("server-renders every PART I coordinate with its configured access state", async () => {
   for (const episode of partOneEpisodes) {
     const response = await render(`/world/part-1/${episode.slug}`);
     assert.equal(response.status, 200, `reader failed: ${episode.slug}`);
@@ -118,9 +118,14 @@ test("server-renders every PART I coordinate as a restricted reader route", asyn
     const html = await response.text();
     assert.match(html, new RegExp(`COORDINATE ${episode.coordinate}`, "i"));
     assert.ok(html.includes(episode.title), `reader title missing: ${episode.title}`);
-    assert.match(html, /RESTRICTED ACCESS/i);
-    assert.match(html, /This coordinate is currently sealed\./i);
-    assert.match(html, /name="robots" content="noindex, nofollow, nocache"/i);
+    if (episode.published) {
+      assert.doesNotMatch(html, /RESTRICTED ACCESS/i);
+      assert.doesNotMatch(html, /name="robots" content="noindex/i);
+    } else {
+      assert.match(html, /RESTRICTED ACCESS/i);
+      assert.match(html, /This coordinate is currently sealed\./i);
+      assert.match(html, /name="robots" content="noindex, nofollow, nocache"/i);
+    }
     assert.match(
       html,
       new RegExp(
@@ -130,6 +135,28 @@ test("server-renders every PART I coordinate as a restricted reader route", asyn
     );
     assert.match(html, /href="\/world\/part-1"/i);
   }
+});
+
+test("COORDINATE X renders the official A Drop PDF edition", async () => {
+  const response = await render("/world/part-1/the-man");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /<title>A Drop — THE OUTSIDER<\/title>/i);
+  assert.match(html, /property="og:title" content="COORDINATE X — A Drop"/i);
+  assert.match(html, /COORDINATE X/i);
+  assert.match(html, /A DROP/i);
+  assert.match(html, /한 방울/i);
+  assert.match(html, /SPECIAL PROLOGUE · 20–25 MIN/i);
+  assert.match(html, /본편에는 아동 대상 폭력, 신체 변형 및 총기 묘사가 포함되어 있습니다\./i);
+  assert.match(html, /href="\/world\/coordinate-x\/a-drop\.pdf"/i);
+  assert.match(html, /src="\/world\/coordinate-x\/a-drop\.pdf"/i);
+  assert.match(html, /name="robots" content="index, follow"/i);
+  assert.match(
+    html,
+    /rel="canonical" href="https:\/\/sadistoji\.com\/world\/part-1\/the-man"/i,
+  );
+  assert.doesNotMatch(html, /RESTRICTED ACCESS/i);
 });
 
 test("reader navigation respects first and last coordinate boundaries", async () => {
@@ -164,6 +191,10 @@ test("canonical sitemap and robots use sadistoji.com", async () => {
   assert.equal(sitemapResponse.status, 200);
   const sitemap = await sitemapResponse.text();
   assert.match(sitemap, /https:\/\/sadistoji\.com\/world\/part-1/i);
+  assert.match(
+    sitemap,
+    /https:\/\/sadistoji\.com\/world\/part-1\/the-man/i,
+  );
   assert.doesNotMatch(sitemap, /chatgpt\.site/i);
 
   const robotsResponse = await render("/robots.txt");

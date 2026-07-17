@@ -113,18 +113,26 @@ function EpisodeDetail({ episode }: { episode: WorldEpisode }) {
         key={episode.slug}
       >
         <div className="archive-axis__detail-body">
-        <span>{getCoordinateLabel(episode)}</span>
-        <h2 className={titleClass}>{episode.title}</h2>
-        {episode.summary.length > 0 ? (
-          <div className="archive-axis__description">
-            {episode.summary.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-        ) : null}
-        <p className="archive-axis__status">
-          {episode.published ? "ARCHIVE OPEN" : "ARCHIVE LOCKED"}
-        </p>
+          <span>{getCoordinateLabel(episode)}</span>
+          <h2 className={titleClass}>{episode.title}</h2>
+          {episode.koreanTitle ? (
+            <p className="archive-axis__detail-korean-title">
+              {episode.koreanTitle}
+            </p>
+          ) : null}
+          {episode.subtitle ? (
+            <p className="archive-axis__detail-subtitle">{episode.subtitle}</p>
+          ) : null}
+          {episode.summary.length > 0 ? (
+            <div className="archive-axis__description">
+              {episode.summary.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          ) : null}
+          <p className="archive-axis__status">
+            {episode.published ? "ARCHIVE OPEN" : "ARCHIVE LOCKED"}
+          </p>
         </div>
       </Link>
     </article>

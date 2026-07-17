@@ -8,15 +8,31 @@ export type WorldEpisodeImage = {
   alt: string;
 };
 
+export type WorldEpisodePdf = {
+  path: string;
+  label: string;
+  contentWarning: string;
+};
+
+export type WorldEpisodeSeo = {
+  pageTitle: string;
+  openGraphTitle: string;
+  description: string;
+};
+
 export type WorldEpisode = {
   part: WorldPart;
   coordinate: string;
   axisCoordinate: string;
   slug: string;
   title: string;
+  koreanTitle?: string;
+  subtitle?: string;
   summary: string[];
   content: string[];
   images: WorldEpisodeImage[];
+  pdf?: WorldEpisodePdf;
+  seo?: WorldEpisodeSeo;
   published: boolean;
   releaseDate: string | null;
   previousEpisode: string | null;

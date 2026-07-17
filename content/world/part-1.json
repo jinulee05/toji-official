@@ -1,14 +1,26 @@
 [
   {
     "part": 1,
-    "coordinate": "01",
+    "coordinate": "X",
     "axisCoordinate": "X",
     "slug": "the-man",
-    "title": "THE MAN",
+    "title": "A DROP",
+    "koreanTitle": "한 방울",
+    "subtitle": "SPECIAL PROLOGUE · 20–25 MIN",
     "summary": [],
     "content": [],
     "images": [],
-    "published": false,
+    "pdf": {
+      "path": "/world/coordinate-x/a-drop.pdf",
+      "label": "READ PDF",
+      "contentWarning": "본편에는 아동 대상 폭력, 신체 변형 및 총기 묘사가 포함되어 있습니다."
+    },
+    "seo": {
+      "pageTitle": "A Drop — THE OUTSIDER",
+      "openGraphTitle": "COORDINATE X — A Drop",
+      "description": "Fourteen-year-old TOJI follows Rin into a forbidden experiment where a single black drop changes everything."
+    },
+    "published": true,
     "releaseDate": null,
     "previousEpisode": null,
     "nextEpisode": "the-girl",
